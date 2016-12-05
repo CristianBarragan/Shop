@@ -1,0 +1,22 @@
+﻿<h2>Products</h2>
+<ul class="products">
+    <li *ngFor="let product of products" (click)="onSelect(product)" [class.selected]="product === selectedProduct">
+        <span class="product-element">
+            <span class="badge">{{product.id}}</span> {{product.name}}
+        </span>
+        <button class="delete-button" (click)="deleteProduct(product, $event)">Delete</button>
+    </li>
+</ul>
+
+<div class="error" *ngIf="error">{{error}}</div>
+<button (click)="addProduct()">Add New Product</button>
+<div *ngIf="addingProduct">
+    <my-product-detail (close)="close($event)"></my-product-detail>
+</div>
+
+<div *ngIf="selectedProduct">
+    <h2>
+        {{selectedProduct.name | uppercase}} is the product
+    </h2>
+    <button (click)="gotoDetail()">View Details</button>
+</div>
