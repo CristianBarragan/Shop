@@ -15,7 +15,18 @@
         <label>Category Id: </label>
         <!-->input [(ngModel)]="product.categoryName" placeholder="categoryName" /-->
         <!-->dropdown [values]="dropdownValues" (select)="action($event.value)">{{product.categoryId}}</!--dropdown-->
-        <input [(ngModel)]="product.categoryId" placeholder="categoryId" />
+        <!-->input [(ngModel)]="product.categoryId" placeholder="categoryId" /-->
+        <!--select [(ngModel)]="selectedCountry.id">
+            <option *ngFor="let country of countries" value={{country.id}}>
+                {{country.name}}
+            </option>
+        </!--select-->
+
+        <select [(ngModel)]="selectedCategory.categoryId">
+            <option *ngFor="let categoryApi of categories" value={{categoryApi.categoryId}}>
+                {{categoryApi.name}}
+            </option>
+        </select>
     </div>
 
     <button (click)="goBack()">Back</button>

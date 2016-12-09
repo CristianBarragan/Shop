@@ -19,6 +19,7 @@ export let ProductApiDetailComponent = class ProductApiDetailComponent {
         this.route = route;
         this.close = new EventEmitter();
         this.navigated = false;
+        this.getCategoriesDropdownValues();
     }
     ngOnInit() {
         this.route.params.forEach((params) => {
@@ -28,9 +29,8 @@ export let ProductApiDetailComponent = class ProductApiDetailComponent {
                 this.productService.getProduct(id)
                     .subscribe((data) => {
                     this.product = data;
-                }, error => console.log(error), () => {
-                    console.log('ProductApiService:GetProducts completed');
-                });
+                    this.selectedCategory = this.categories.find(item => item.categoryId === this.product.categoryId);
+                }, (err) => console.error("Error ocurred : ", err));
             }
             else {
                 this.navigated = false;
@@ -38,24 +38,27 @@ export let ProductApiDetailComponent = class ProductApiDetailComponent {
             }
         });
     }
+    getCategoriesDropdownValues() {
+        this.categoryService.getCategories()
+            .subscribe(response => {
+            this.categories = response;
+        }, (error) => console.log(error), () => {
+            console.log('ProductApiService:GetProducts completed');
+        });
+    }
     save() {
         if (this.product.productId !== undefined) {
+            this.product.categoryId = this.selectedCategory.categoryId;
             this.productService
                 .updateProduct(this.product.productId, this.product)
                 .subscribe((data) => {
                 this.goBack(this.product);
-            }, error => console.log(error), () => {
-                console.log('ProductApiService:GetProducts completed');
-            });
+            }, (err) => console.error("Error ocurred : ", err));
         }
         else {
             this.productService
                 .addProduct(this.product)
-                .subscribe((data) => {
-                this.goBack(this.product);
-            }, error => console.log(error), () => {
-                console.log('ProductApiService:GetProducts completed');
-            });
+                .subscribe((data) => this.goBack(this.product), (err) => console.error("Error ocurred : ", err));
         }
     }
     goBack(savedProduct = null) {

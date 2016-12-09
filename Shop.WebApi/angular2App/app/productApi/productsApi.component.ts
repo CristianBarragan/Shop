@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { ProductApi } from '../dto/productApi';
 import { ProductApiService } from '../services/productApi.service';
 import { CategoryApiService } from '../services/categoryApi.service';
-import { DropdownComponent } from '../ui/dropdownComponent'
 
 @Component({
   selector: 'my-products',
@@ -12,7 +11,6 @@ import { DropdownComponent } from '../ui/dropdownComponent'
 export class ProductsApiComponent implements OnInit {
   products: ProductApi[];
   selectedProduct: ProductApi;
-  dropdownValues: DropdownComponent;
   addingProduct = false;
   error: any;
 

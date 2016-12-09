@@ -4,8 +4,6 @@ import { ProductApi } from '../dto/productApi';
 import { CategoryApi} from '../dto/categoryApi';
 import { ProductApiService } from '../services/productApi.service';
 import { CategoryApiService} from '../services/categoryApi.service';
-import { DropdownComponent} from '../ui/DropdownComponent';
-//import { DropdownValue} from '../ui/DropdownValue';
 
 @Component({
   selector: 'my-productApi-detail',
@@ -16,14 +14,14 @@ export class ProductApiDetailComponent implements OnInit {
   @Output() close = new EventEmitter();
   error: any;
   navigated = false; // true if navigated here
-  //dropdownComponent : DropdownComponent;
   categories: CategoryApi[]; 
+  selectedCategory:CategoryApi;
 
   constructor(
     private productService: ProductApiService,
     private categoryService: CategoryApiService,
     private route: ActivatedRoute) {
-    //this.dropdownComponent.values = this.getCategoriesDropdownValues();
+    this.getCategoriesDropdownValues();
   }
 
   ngOnInit(): void {
@@ -33,14 +31,12 @@ export class ProductApiDetailComponent implements OnInit {
         this.navigated = true;
         this.productService.getProduct(id)
         .subscribe(
-            (data) => {this.product = data;
-            //(err) => {this.error = err};        
-        },
-        error => console.log(error),
-        () => {
-            console.log('ProductApiService:GetProducts completed');
-        }
-        );
+            (data) => {
+                    this.product = data;
+                    this.selectedCategory = this.categories.find(item => item.categoryId === this.product.categoryId);
+            },
+            (err) => console.error("Error ocurred : ", err)
+         );       
       } else {
         this.navigated = false;
         this.product = new ProductApi();
@@ -48,38 +44,28 @@ export class ProductApiDetailComponent implements OnInit {
     });
   }
 
-   /*private getCategoriesDropdownValues () : DropdownValue[] { 
+   getCategoriesDropdownValues () : void { 
       this.categoryService.getCategories()
-      .subscribe(
-        (data) => {this.categories = data;
-        //(err) => {this.error = err};        
-        },
-        error => console.log(error),
+      .subscribe(response => {
+        this.categories = response;  
+      },
+      (error : any) => console.log(error),
         () => {
-          console.log('ProductApiService:GetProducts completed');
+            console.log('ProductApiService:GetProducts completed');
         }
       );
-    
-      var items: DropdownValue[];
-      for(var i = 1; i <=this.categories.length ; i++){
-        items.push(new DropdownValue(this.categories[i].categoryId, this.categories[i].name));
-      }
-      return items;
-    }*/
+    }
 
   save(): void {
     if(this.product.productId !== undefined)
     {
+        this.product.categoryId = this.selectedCategory.categoryId;
         this.productService
         .updateProduct(this.product.productId, this.product)
         .subscribe(
-            (data) => {this.goBack(this.product);
-            //(err) => {this.error = err};
-        },
-        error => console.log(error),
-        () => {
-            console.log('ProductApiService:GetProducts completed');
-        }
+            (data) => {
+                    this.goBack(this.product);},
+            (err) => console.error("Error ocurred : ", err)
         );
     }
     else
@@ -87,13 +73,8 @@ export class ProductApiDetailComponent implements OnInit {
         this.productService
         .addProduct(this.product)
         .subscribe(
-            (data) => {this.goBack(this.product);
-            //(err) => {this.error = err};
-        },
-        error => console.log(error),
-        () => {
-            console.log('ProductApiService:GetProducts completed');
-        }
+            (data) => this.goBack(this.product),
+            (err) => console.error("Error ocurred : ", err)
         );
     }
   }

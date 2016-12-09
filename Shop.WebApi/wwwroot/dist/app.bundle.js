@@ -69419,6 +69419,7 @@ let ProductApiDetailComponent = class ProductApiDetailComponent {
         this.route = route;
         this.close = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["_7" /* EventEmitter */]();
         this.navigated = false;
+        this.getCategoriesDropdownValues();
     }
     ngOnInit() {
         this.route.params.forEach((params) => {
@@ -69428,9 +69429,8 @@ let ProductApiDetailComponent = class ProductApiDetailComponent {
                 this.productService.getProduct(id)
                     .subscribe((data) => {
                     this.product = data;
-                }, error => console.log(error), () => {
-                    console.log('ProductApiService:GetProducts completed');
-                });
+                    this.selectedCategory = this.categories.find(item => item.categoryId === this.product.categoryId);
+                }, (err) => console.error("Error ocurred : ", err));
             }
             else {
                 this.navigated = false;
@@ -69438,24 +69438,27 @@ let ProductApiDetailComponent = class ProductApiDetailComponent {
             }
         });
     }
+    getCategoriesDropdownValues() {
+        this.categoryService.getCategories()
+            .subscribe(response => {
+            this.categories = response;
+        }, (error) => console.log(error), () => {
+            console.log('ProductApiService:GetProducts completed');
+        });
+    }
     save() {
         if (this.product.productId !== undefined) {
+            this.product.categoryId = this.selectedCategory.categoryId;
             this.productService
                 .updateProduct(this.product.productId, this.product)
                 .subscribe((data) => {
                 this.goBack(this.product);
-            }, error => console.log(error), () => {
-                console.log('ProductApiService:GetProducts completed');
-            });
+            }, (err) => console.error("Error ocurred : ", err));
         }
         else {
             this.productService
                 .addProduct(this.product)
-                .subscribe((data) => {
-                this.goBack(this.product);
-            }, error => console.log(error), () => {
-                console.log('ProductApiService:GetProducts completed');
-            });
+                .subscribe((data) => this.goBack(this.product), (err) => console.error("Error ocurred : ", err));
         }
     }
     goBack(savedProduct = null) {
@@ -79538,7 +79541,7 @@ module.exports = "<div class=\"panel-group\">\r\n\r\n    <!--<p>{{message}}</p>\
 /* 805 */
 /***/ function(module, exports) {
 
-module.exports = "<div *ngIf=\"product\">\r\n    <h2>{{product.name}}</h2>\r\n    <div>\r\n        <label>Id: </label>{{product.productId}}\r\n    </div>\r\n    <div>\r\n        <label>Name: </label>\r\n        <input [(ngModel)]=\"product.name\" placeholder=\"name\" />\r\n    </div>\r\n    <div>\r\n        <label>Price: </label>\r\n        <input [(ngModel)]=\"product.price\" placeholder=\"price\" />\r\n    </div>    \r\n    <div>\r\n        <label>Category Id: </label>\r\n        <!-->input [(ngModel)]=\"product.categoryName\" placeholder=\"categoryName\" /-->\r\n        <!-->dropdown [values]=\"dropdownValues\" (select)=\"action($event.value)\">{{product.categoryId}}</!--dropdown-->\r\n        <input [(ngModel)]=\"product.categoryId\" placeholder=\"categoryId\" />\r\n    </div>\r\n\r\n    <button (click)=\"goBack()\">Back</button>\r\n    <button (click)=\"save()\">Save</button>\r\n</div>"
+module.exports = "<div *ngIf=\"product\">\r\n    <h2>{{product.name}}</h2>\r\n    <div>\r\n        <label>Id: </label>{{product.productId}}\r\n    </div>\r\n    <div>\r\n        <label>Name: </label>\r\n        <input [(ngModel)]=\"product.name\" placeholder=\"name\" />\r\n    </div>\r\n    <div>\r\n        <label>Price: </label>\r\n        <input [(ngModel)]=\"product.price\" placeholder=\"price\" />\r\n    </div>    \r\n    <div>\r\n        <label>Category Id: </label>\r\n        <!-->input [(ngModel)]=\"product.categoryName\" placeholder=\"categoryName\" /-->\r\n        <!-->dropdown [values]=\"dropdownValues\" (select)=\"action($event.value)\">{{product.categoryId}}</!--dropdown-->\r\n        <!-->input [(ngModel)]=\"product.categoryId\" placeholder=\"categoryId\" /-->\r\n        <!--select [(ngModel)]=\"selectedCountry.id\">\r\n            <option *ngFor=\"let country of countries\" value={{country.id}}>\r\n                {{country.name}}\r\n            </option>\r\n        </!--select-->\r\n\r\n        <select [(ngModel)]=\"selectedCategory.categoryId\">\r\n            <option *ngFor=\"let categoryApi of categories\" value={{categoryApi.categoryId}}>\r\n                {{categoryApi.name}}\r\n            </option>\r\n        </select>\r\n    </div>\r\n\r\n    <button (click)=\"goBack()\">Back</button>\r\n    <button (click)=\"save()\">Save</button>\r\n</div>"
 
 /***/ },
 /* 806 */

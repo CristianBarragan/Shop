@@ -1,4 +1,3 @@
 ﻿export class CategoryApi {
-    categoryId: number;
-    name: string;
+    constructor(public categoryId: number, public name: string) { }
 }

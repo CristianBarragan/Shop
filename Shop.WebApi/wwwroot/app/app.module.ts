@@ -27,7 +27,7 @@ import { CategoryApiService} from './services/categoryApi.service'
     ],
     declarations: [
         AppComponent,
-        routedComponents//,
+        routedComponents
         //DropdownComponent
     ],
     providers: [
